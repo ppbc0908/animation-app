@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "动画世界 - 52集长篇动画平台",
+  title: "阿梦西林 - 动画平台",
   description: "一段跨越时空的冒险旅程",
 };
 

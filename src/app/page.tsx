@@ -3,7 +3,7 @@ export default function Home() {
     <div className="min-h-screen bg-white text-black">
       {/* 导航栏 */}
       <nav className="flex items-center justify-between px-8 py-4 border-b border-gray-200">
-        <div className="text-2xl font-bold">动画世界</div>
+        <div className="text-2xl font-bold">阿梦西林</div>
         <div className="flex gap-6 text-sm">
           <a href="#" className="hover:text-gray-500 transition">首页</a>
           <a href="#" className="hover:text-gray-500 transition">全部剧集</a>
