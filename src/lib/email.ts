@@ -1,13 +1,20 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_AUTH_API_KEY);
+let resend: Resend;
+
+function getResendClient(): Resend {
+  if (!resend) {
+    resend = new Resend(process.env.RESEND_AUTH_API_KEY);
+  }
+  return resend;
+}
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://animation-app-ashy.vercel.app';
 
 export async function sendVerifyEmail(email: string, token: string) {
   const url = `${SITE_URL}/api/verify-email?token=${token}`;
 
-  await resend.emails.send({
+  await getResendClient().emails.send({
     from: '阿梦西林 <onboarding@resend.dev>',
     to: email,
     subject: '请验证您的邮箱 - 阿梦西林',
@@ -35,7 +42,7 @@ export async function sendVerifyEmail(email: string, token: string) {
 export async function sendResetEmail(email: string, token: string) {
   const url = `${SITE_URL}/reset-password?token=${token}`;
 
-  await resend.emails.send({
+  await getResendClient().emails.send({
     from: '阿梦西林 <onboarding@resend.dev>',
     to: email,
     subject: '重置密码 - 阿梦西林',
