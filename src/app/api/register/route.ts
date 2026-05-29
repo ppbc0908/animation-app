@@ -40,8 +40,8 @@ export async function POST(request: Request) {
     // 发送验证邮件（失败不阻止注册）
     try {
       await sendVerifyEmail(email, verifyToken);
-    } catch {
-      // 邮件发送失败，用户仍可登录但未验证
+    } catch (emailError) {
+      console.error('验证邮件发送失败:', emailError);
     }
 
     const token = jwt.sign(
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
       { expiresIn: '7d' }
     );
 
+    const isProd = process.env.NODE_ENV === 'production';
     const response = NextResponse.json({
       message: '注册成功，请查收验证邮件',
       username,
@@ -57,14 +58,15 @@ export async function POST(request: Request) {
     });
     response.cookies.set('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: isProd,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
     return response;
-  } catch {
-    return NextResponse.json({ error: '注册失败' }, { status: 500 });
+  } catch (error) {
+    console.error('注册失败详情:', error);
+    return NextResponse.json({ error: '注册失败，请稍后重试' }, { status: 500 });
   }
 }

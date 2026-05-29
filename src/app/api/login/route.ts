@@ -40,16 +40,18 @@ export async function POST(request: Request) {
       username: user.username,
       email: user.email,
     });
+    const isProd = process.env.NODE_ENV === 'production';
     response.cookies.set('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: isProd,
       sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60,
       path: '/',
     });
 
     return response;
-  } catch {
-    return NextResponse.json({ error: '登录失败' }, { status: 500 });
+  } catch (error) {
+    console.error('登录失败详情:', error);
+    return NextResponse.json({ error: '登录失败，请稍后重试' }, { status: 500 });
   }
 }
