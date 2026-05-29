@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import db, { initDB } from '@/lib/db';
+import { sendVerifyEmail } from '@/lib/email';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'amengxilin-secret-key-2024';
+
+function generateToken(): string {
+  return crypto.randomBytes(32).toString('hex');
+}
 
 export async function POST(request: Request) {
   try {
@@ -24,10 +30,19 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const verifyToken = generateToken();
+
     const result = await db.execute({
-      sql: 'INSERT INTO users (email, password, username) VALUES (?, ?, ?)',
-      args: [email, hashedPassword, username],
+      sql: 'INSERT INTO users (email, password, username, verify_token) VALUES (?, ?, ?, ?)',
+      args: [email, hashedPassword, username, verifyToken],
     });
+
+    // 发送验证邮件（失败不阻止注册）
+    try {
+      await sendVerifyEmail(email, verifyToken);
+    } catch {
+      // 邮件发送失败，用户仍可登录但未验证
+    }
 
     const token = jwt.sign(
       { userId: Number(result.lastInsertRowid), email, username },
@@ -35,7 +50,11 @@ export async function POST(request: Request) {
       { expiresIn: '7d' }
     );
 
-    const response = NextResponse.json({ message: '注册成功', username, email });
+    const response = NextResponse.json({
+      message: '注册成功，请查收验证邮件',
+      username,
+      email,
+    });
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: false,

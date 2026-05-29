@@ -12,6 +12,10 @@ export async function initDB() {
       email TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       username TEXT NOT NULL,
+      verified INTEGER DEFAULT 0,
+      verify_token TEXT,
+      reset_token TEXT,
+      reset_expires INTEGER,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);

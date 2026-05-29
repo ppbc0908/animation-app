@@ -75,6 +75,12 @@ export default function LoginPage() {
             />
           </div>
 
+          <div className="text-right">
+            <Link href="/forgot-password" className="text-sm text-gray-500 hover:text-black">
+              忘记密码？
+            </Link>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
