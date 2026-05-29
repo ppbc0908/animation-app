@@ -1,16 +1,6 @@
 export default function Home() {
   return (
     <div className="min-h-screen bg-white text-black">
-      {/* 导航栏 */}
-      <nav className="flex items-center justify-between px-8 py-4 border-b border-gray-200">
-        <div className="text-2xl font-bold">阿梦西林</div>
-        <div className="flex gap-6 text-sm">
-          <a href="#" className="hover:text-gray-500 transition">首页</a>
-          <a href="#" className="hover:text-gray-500 transition">全部剧集</a>
-          <a href="#" className="hover:text-gray-500 transition">我的收藏</a>
-        </div>
-      </nav>
-
       {/* 主视觉区 */}
       <section className="flex flex-col items-center justify-center text-center py-20 px-4 bg-gray-50">
         <h1 className="text-5xl md:text-7xl font-bold mb-6">
